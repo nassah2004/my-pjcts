@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViralRepurpose AI | Pro Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/generative-ai": "https://esm.run/@google/generative-ai"
+        }
+      }
+    </script>
+    <style>
+        .ad-label { text-align: center; color: #cbd5e1; font-size: 10px; font-weight: bold; letter-spacing: 0.1em; margin-bottom: 4px; text-transform: uppercase; }
+        .gradient-bg { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div class="w-full bg-white border-b py-2 overflow-hidden">
+        <div class="ad-label">Advertisement</div>
+        <div class="max-w-[728px] h-[90px] mx-auto bg-slate-100 flex items-center justify-center text-slate-300 italic border rounded">
+            Leaderboard 728x90
+        </div>
+    </div>
+
+    <main class="max-w-4xl mx-auto py-12 px-6">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-black tracking-tight text-slate-900 mb-4">ViralRepurpose <span class="text-indigo-600">AI</span></h1>
+            <p class="text-slate-500 text-lg">Turn long-form videos into viral content packs in seconds.</p>
+        </div>
+
+        <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-200 relative">
+            <textarea id="inputText" rows="6" 
+                class="w-full p-5 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-indigo-500 outline-none text-lg transition-all" 
+                placeholder="Paste transcript here..."></textarea>
+            
+            <button onclick="generateViralContent()" id="genBtn" 
+                class="w-full mt-6 gradient-bg text-white font-bold py-4 rounded-2xl text-xl shadow-lg hover:opacity-90 active:scale-[0.98] transition-all">
+                Generate Viral Assets ✨
+            </button>
+        </div>
+
+        <div class="my-10">
+            <div class="ad-label">Sponsored Content</div>
+            <div class="w-full h-[250px] bg-white border border-slate-200 rounded-3xl flex items-center justify-center text-slate-300 italic">
+                In-Feed Native Ad
+            </div>
+        </div>
+
+        <div id="resultContainer" class="hidden space-y-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-bold">Your Results</h2>
+                <button onclick="copyToClipboard()" class="bg-slate-900 text-white px-5 py-2 rounded-xl text-sm font-bold">Copy All</button>
+            </div>
+            <div id="outputText" class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm whitespace-pre-wrap text-slate-700 leading-relaxed text-lg"></div>
+        </div>
+
+        <div class="mt-20 pt-10 border-t border-slate-200 text-slate-500 text-sm">
+            <div class="grid md:grid-cols-2 gap-8 mb-10">
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-2">How it Works</h3>
+                    <p>Our AI analyzes the core message of your transcript, identifies high-retention hooks, and restructures the information specifically for the TikTok, Twitter, and LinkedIn algorithms.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-2">Why Repurpose?</h3>
+                    <p>In 2026, omni-channel presence is mandatory. One video can reach 10x more people when distributed across multiple text and short-form video platforms.</p>
+                </div>
+            </div>
+            
+            <div class="flex flex-wrap gap-6 justify-center font-medium">
+                <a href="#" class="hover:text-indigo-600">About Us</a>
+                <a href="privacy.html" class="hover:text-indigo-600">Privacy Policy</a>
+                <a href="terms.html" class="hover:text-indigo-600">Terms of Service</a>
+                <a href="#" class="hover:text-indigo-600">Contact</a>
+            </div>
+        </div>
+    </main>
+
+    <div class="w-full bg-slate-900 py-4 mt-10">
+        <div class="max-w-[320px] h-[50px] mx-auto bg-slate-800 flex items-center justify-center text-slate-500 text-[10px] border border-slate-700 rounded">
+            Mobile Anchor 320x50
+        </div>
+    </div>
+
+    <script type="module">
+        import { GoogleGenerativeAI } from "@google/generative-ai";
+
+        const API_KEY = "AIzaSyBYM3aoAZmLmCWg2R1RGits4DSm1TOlm5Q";
+        const genAI = new GoogleGenerativeAI(API_KEY);
+
+        window.generateViralContent = async function() {
+            const input = document.getElementById('inputText').value;
+            const btn = document.getElementById('genBtn');
+            const output = document.getElementById('outputText');
+            const container = document.getElementById('resultContainer');
+
+            if(!input) return alert("Please paste text!");
+            btn.disabled = true;
+            btn.innerText = "Repurposing...";
+
+            const models = ["gemini-3-flash-preview", "gemini-2.5-flash", "gemini-1.5-flash"];
+            let success = false;
+
+            for (let name of models) {
+                if (success) break;
+                try {
+                    const model = genAI.getGenerativeModel({ model: name });
+                    const res = await model.generateContent("Create a TikTok script, 5-post Twitter thread, and LinkedIn post from this: " + input);
+                    output.innerText = await res.response.text();
+                    container.classList.remove('hidden');
+                    container.scrollIntoView({ behavior: 'smooth' });
+                    success = true;
+                } catch (e) { console.log("Trying next model..."); }
+            }
+
+            btn.disabled = false;
+            btn.innerText = "Generate Viral Assets ✨";
+        }
+
+        window.copyToClipboard = () => {
+            navigator.clipboard.writeText(document.getElementById('outputText').innerText);
+            alert("Copied to clipboard!");
+        }
+    </script>
+</body>
+</html>
